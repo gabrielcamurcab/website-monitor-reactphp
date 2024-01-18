@@ -1,0 +1,18 @@
+{
+    "name": "gabrielcamurca/website-monitor-reactphp",
+    "autoload": {
+        "psr-4": {
+            "WebMonitor\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Gabriel Camurça",
+            "email": "gabriel@brtech.dev"
+        }
+    ],
+    "require": {
+        "react/event-loop": "^1.5",
+        "react/http": "^1.9"
+    }
+}
