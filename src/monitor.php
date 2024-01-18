@@ -4,27 +4,35 @@ require 'vendor/autoload.php';
 
 use React\EventLoop\Loop;
 use React\Http\Browser;
+use Psr\Http\Message\ResponseInterface;
 
 $loop = Loop::get();
 $client = new Browser($loop);
 
-$siteUrl = 'https://brtech.dev';
+$sites = [
+    'https://google.com',
+    'https://teste.com',
+    'https://brtech.dev',
+    'https://brdocs.com',
+];
 $interval = 5;
 
-$checkSite = function () use ($client, $siteUrl) {
-    $client->get($siteUrl)->then(function (Psr\Http\Message\ResponseInterface $response) use ($siteUrl) {
-        $statusCode = $response->getStatusCode();
-        if ($statusCode === 200) {
-            echo "\nO site $siteUrl está no ar!";
-        } else {
-            echo "\nO site $siteUrl está FORA do ar.\nStatusCode: $statusCode";
-        }
-    }, function (Exception $e) {
-        echo 'Error: ' . $e->getMessage() . PHP_EOL;
-    });
+$checkSite = function () use ($client, $sites) {
+    foreach ($sites as $site) {
+        $client->get($site)->then(function (ResponseInterface $response) use ($site) {
+            $statusCode = $response->getStatusCode();
+            if ($statusCode === 200) {
+                echo "\nO site $site está no ar!";
+            } else {
+                echo "\nO site $site está FORA do ar.\nStatusCode: $statusCode";
+            }
+        }, function (Exception $e) {
+            echo "\nError: " . $e->getMessage() . PHP_EOL;
+        });
+    }
 };
 
 $loop->addPeriodicTimer($interval, $checkSite);
 
-echo "Monitoramento iniciado para $siteUrl. Pressione Ctrl+C para sair";
+echo "Monitoramento iniciado. Pressione Ctrl+C para sair";
 $loop->run();
