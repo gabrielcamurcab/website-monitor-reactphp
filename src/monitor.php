@@ -6,6 +6,8 @@ use React\EventLoop\Loop;
 use React\Http\Browser;
 use Psr\Http\Message\ResponseInterface;
 
+use function PHPSTORM_META\map;
+
 $loop = Loop::get();
 $client = new Browser($loop);
 
@@ -14,10 +16,15 @@ $sites = [
     'https://teste.com',
     'https://brtech.dev',
     'https://brdocs.com',
+    'http://localhost'
 ];
 $interval = 5;
 
 $checkSite = function () use ($client, $sites) {
+    echo "\n\nLista de sites: ";
+    array_map(function ($site) {
+        echo "$site, ";
+    }, $sites);
     foreach ($sites as $site) {
         $client->get($site)->then(function (ResponseInterface $response) use ($site) {
             $statusCode = $response->getStatusCode();
@@ -26,8 +33,8 @@ $checkSite = function () use ($client, $sites) {
             } else {
                 echo "\nO site $site está FORA do ar.\nStatusCode: $statusCode";
             }
-        }, function (Exception $e) {
-            echo "\nError: " . $e->getMessage() . PHP_EOL;
+        }, function (Exception $e) use ($site) {
+            echo "\n$site: " . $e->getMessage();
         });
     }
 };
